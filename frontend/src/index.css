@@ -1,0 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Global Reset & Typography ─────────────────────────────── */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  @apply bg-white text-dark-900 dark:bg-dark-950 dark:text-dark-100;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ─── Scrollbar Styling ─────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-100 dark:bg-dark-900;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-primary-400 dark:bg-primary-600 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary-500 dark:bg-primary-500;
+}
+
+/* ─── Glass Card ─────────────────────────────────────────────── */
+
+@layer components {
+  .glass-card {
+    @apply bg-white/70 dark:bg-dark-800/60 backdrop-blur-xl 
+           border border-white/20 dark:border-dark-700/40
+           rounded-2xl shadow-lg dark:shadow-dark-900/30;
+  }
+
+  .glass-card-hover {
+    @apply glass-card transition-all duration-300 
+           hover:shadow-xl hover:shadow-primary-500/10 
+           dark:hover:shadow-primary-400/10 
+           hover:-translate-y-1 hover:border-primary-200 
+           dark:hover:border-primary-700;
+  }
+
+  /* ─── Gradient Text ──────────────────────────────────────── */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary-500 via-primary-400 to-accent-400 
+           bg-clip-text text-transparent;
+  }
+
+  /* ─── Gradient Background ────────────────────────────────── */
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary-500 via-primary-600 to-accent-500;
+  }
+
+  .gradient-bg-subtle {
+    @apply bg-gradient-to-br from-primary-50 via-white to-accent-50 
+           dark:from-dark-900 dark:via-dark-950 dark:to-primary-900/20;
+  }
+
+  /* ─── Buttons ────────────────────────────────────────────── */
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold text-white
+           bg-gradient-to-r from-primary-500 to-primary-600
+           hover:from-primary-600 hover:to-primary-700
+           shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30
+           transition-all duration-300 hover:-translate-y-0.5
+           active:translate-y-0 active:shadow-md
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold
+           bg-white dark:bg-dark-800 
+           text-primary-600 dark:text-primary-400
+           border-2 border-primary-200 dark:border-primary-700
+           hover:bg-primary-50 dark:hover:bg-primary-900/30
+           hover:border-primary-400 dark:hover:border-primary-500
+           shadow-md hover:shadow-lg
+           transition-all duration-300 hover:-translate-y-0.5;
+  }
+
+  .btn-accent {
+    @apply px-6 py-3 rounded-xl font-semibold text-white
+           bg-gradient-to-r from-accent-400 to-accent-500
+           hover:from-accent-500 hover:to-accent-600
+           shadow-lg shadow-accent-400/25 hover:shadow-xl hover:shadow-accent-400/30
+           transition-all duration-300 hover:-translate-y-0.5;
+  }
+
+  /* ─── Input Fields ───────────────────────────────────────── */
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl
+           bg-white dark:bg-dark-800 
+           border-2 border-dark-200 dark:border-dark-600
+           text-dark-900 dark:text-dark-100
+           placeholder-dark-400 dark:placeholder-dark-500
+           focus:border-primary-400 dark:focus:border-primary-500
+           focus:ring-4 focus:ring-primary-100 dark:focus:ring-primary-900/30
+           outline-none transition-all duration-200;
+  }
+
+  /* ─── Badge ──────────────────────────────────────────────── */
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .badge-primary {
+    @apply badge bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300;
+  }
+
+  .badge-accent {
+    @apply badge bg-accent-100 dark:bg-accent-900/40 text-accent-700 dark:text-accent-300;
+  }
+
+  /* ─── Section Container ──────────────────────────────────── */
+  .section-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12;
+  }
+
+  /* ─── Progress Bar ───────────────────────────────────────── */
+  .progress-bar {
+    @apply h-3 rounded-full bg-dark-100 dark:bg-dark-800 overflow-hidden;
+  }
+
+  .progress-fill {
+    @apply h-full rounded-full gradient-bg transition-all duration-700 ease-out;
+  }
+}
+
+/* ─── Custom Animations ──────────────────────────────────────── */
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    theme('colors.dark.100') 25%,
+    theme('colors.dark.50') 50%,
+    theme('colors.dark.100') 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.dark .shimmer {
+  background: linear-gradient(
+    90deg,
+    theme('colors.dark.800') 25%,
+    theme('colors.dark.700') 50%,
+    theme('colors.dark.800') 75%
+  );
+  background-size: 200% 100%;
+}
+
+/* ─── Staggered Animation Delays ─────────────────────────────── */
+
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+
+/* ─── File Upload Dropzone ───────────────────────────────────── */
+
+.dropzone {
+  @apply relative border-2 border-dashed border-primary-300 dark:border-primary-600
+         rounded-2xl p-8 text-center cursor-pointer
+         transition-all duration-300
+         hover:border-primary-500 dark:hover:border-primary-400
+         hover:bg-primary-50/50 dark:hover:bg-primary-900/20;
+}
+
+.dropzone.active {
+  @apply border-primary-500 dark:border-primary-400 
+         bg-primary-50 dark:bg-primary-900/30
+         scale-[1.02];
+}
