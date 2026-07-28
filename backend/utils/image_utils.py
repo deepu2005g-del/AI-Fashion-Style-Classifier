@@ -14,8 +14,8 @@ ALLOWED_EXTENSIONS = {'jpg', 'jpeg', 'png'}
 MAX_FILE_SIZE = 10 * 1024 * 1024
 
 # Model input dimensions
-IMG_WIDTH = 128
-IMG_HEIGHT = 128
+IMG_WIDTH = 224
+IMG_HEIGHT = 224
 
 
 def allowed_file(filename):
@@ -77,7 +77,7 @@ def preprocess_image(image_path):
         image_path (str): Path to the image file.
         
     Returns:
-        numpy.ndarray: Preprocessed image array with shape (1, 128, 128, 3).
+        numpy.ndarray: Preprocessed image array with shape (1, 224, 224, 3).
         
     Raises:
         ValueError: If the image cannot be opened or processed.
@@ -95,7 +95,7 @@ def preprocess_image(image_path):
         # Convert to numpy array and normalize to [0, 1]
         img_array = np.array(img, dtype=np.float32) / 255.0
         
-        # Expand dimensions for batch prediction: (128, 128, 3) -> (1, 128, 128, 3)
+        # Expand dimensions for batch prediction: (224, 224, 3) -> (1, 224, 224, 3)
         img_array = np.expand_dims(img_array, axis=0)
         
         return img_array
