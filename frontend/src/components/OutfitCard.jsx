@@ -51,14 +51,37 @@ const OutfitCard = ({ item, category }) => {
 
   const imageUrl = getImageUrl(itemName, itemCategory);
 
-  // Generate a realistic but stable random price for the demo
+  // Determine the platform (Flipkart or Meesho) deterministically based on item name
+  const getPlatform = (name) => {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return Math.abs(hash) % 2 === 0 ? 'Flipkart' : 'Meesho';
+  };
+  
+  const platform = getPlatform(itemName);
+  
+  // Construct search URL
+  const getSearchUrl = (name, cat, platform) => {
+    const query = encodeURIComponent(`${name} ${cat}`);
+    if (platform === 'Flipkart') {
+      return `https://www.flipkart.com/search?q=${query}`;
+    } else {
+      return `https://www.meesho.com/search?q=${query}`;
+    }
+  };
+  
+  const searchUrl = getSearchUrl(itemName, itemCategory, platform);
+
+  // Generate a realistic but stable random price for the demo (in INR for Indian stores)
   const generatePrice = (name) => {
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
-    const price = 24 + (Math.abs(hash) % 150) + 0.99;
-    return price.toFixed(2);
+    const price = 299 + (Math.abs(hash) % 2000);
+    return price.toString();
   };
   
   const price = generatePrice(itemName);
@@ -85,6 +108,11 @@ const OutfitCard = ({ item, category }) => {
         <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-300 z-10 bg-white/80 dark:bg-dark-800/80 backdrop-blur rounded-full shadow-sm hover:bg-white">
           <FavoriteButton item={{ name: itemName, icon: itemIcon, category: itemCategory }} type="outfit" />
         </div>
+        
+        {/* Platform Badge */}
+        <div className="absolute bottom-3 left-3 bg-white/90 dark:bg-dark-900/90 backdrop-blur-md px-2 py-1 rounded-md text-xs font-bold shadow-sm">
+          <span className={platform === 'Flipkart' ? 'text-[#2874f0]' : 'text-[#f43397]'}>{platform}</span>
+        </div>
       </div>
 
       {/* Product Details Area */}
@@ -95,7 +123,7 @@ const OutfitCard = ({ item, category }) => {
               {itemName}
             </h4>
             <span className="font-bold text-primary-600 dark:text-primary-400 whitespace-nowrap">
-              ${price}
+              ₹{price}
             </span>
           </div>
           <p className="text-xs text-dark-500 dark:text-dark-400 line-clamp-1 mt-0.5">
@@ -105,13 +133,24 @@ const OutfitCard = ({ item, category }) => {
         
         {/* Shopping Actions */}
         <div className="mt-4 pt-4 border-t border-dark-100 dark:border-dark-800 flex gap-2">
-          <button className="flex-1 bg-dark-900 hover:bg-black dark:bg-white dark:hover:bg-dark-50 dark:text-dark-900 text-white py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm active:scale-[0.98]">
+          <a 
+            href={searchUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`flex-1 ${platform === 'Flipkart' ? 'bg-[#2874f0] hover:bg-[#1b5bd1]' : 'bg-[#f43397] hover:bg-[#d62080]'} text-white py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm active:scale-[0.98]`}
+          >
             <FiShoppingBag className="w-4 h-4" />
-            <span>Shop Now</span>
-          </button>
-          <button className="p-2.5 rounded-lg border border-dark-200 dark:border-dark-700 hover:bg-dark-50 dark:hover:bg-dark-800 text-dark-600 dark:text-dark-300 transition-colors tooltip-trigger active:scale-[0.95]" title="Find Similar on web">
+            <span>Shop on {platform}</span>
+          </a>
+          <a 
+            href={searchUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-2.5 rounded-lg border border-dark-200 dark:border-dark-700 hover:bg-dark-50 dark:hover:bg-dark-800 text-dark-600 dark:text-dark-300 transition-colors tooltip-trigger active:scale-[0.95]" 
+            title={`View on ${platform}`}
+          >
             <FiExternalLink className="w-4 h-4" />
-          </button>
+          </a>
         </div>
       </div>
     </div>
