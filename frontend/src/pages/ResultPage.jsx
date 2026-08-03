@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLocation, Navigate, Link } from 'react-router-dom';
 import PredictionResult from '../components/PredictionResult';
 import QuizResult from '../components/QuizResult';
@@ -8,6 +8,7 @@ import { IoArrowBack, IoColorPaletteOutline, IoCalendarOutline, IoPartlySunnyOut
 const ResultPage = () => {
   const location = useLocation();
   const state = location.state;
+  const [activeFilter, setActiveFilter] = useState(null);
 
   // If no state (user navigated directly), redirect to home
   if (!state) {
@@ -25,6 +26,14 @@ const ResultPage = () => {
     reason,
     suggestions,
   } = state;
+
+  const toggleFilter = (filter) => {
+    if (activeFilter === filter) {
+      setActiveFilter(null);
+    } else {
+      setActiveFilter(filter);
+    }
+  };
 
   return (
     <div className="section-container">
@@ -75,41 +84,26 @@ const ResultPage = () => {
               </p>
             </div>
 
-            {/* Outfits Grid */}
-            <div className="mb-10">
-              <h3 className="font-heading font-bold text-xl mb-6">Core Clothing</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {(suggestions.outfit_details || []).map((item, idx) => (
-                  <OutfitCard key={idx} item={item} category={item.category} />
-                ))}
-              </div>
-            </div>
-
-            {/* Accessories Grid */}
-            <div className="mb-10">
-              <h3 className="font-heading font-bold text-xl mb-6">Accessories & Footwear</h3>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                {(suggestions.accessory_details || []).map((item, idx) => (
-                  <OutfitCard key={`acc-${idx}`} item={item} category="accessory" />
-                ))}
-                {(suggestions.footwear_details || []).map((item, idx) => (
-                  <OutfitCard key={`foot-${idx}`} item={item} category="footwear" />
-                ))}
-              </div>
-            </div>
-
-            {/* Metadata (Colors, Occasions, Seasons) */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Metadata (Colors, Occasions, Seasons) as interactive filters */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
               <div className="p-6 rounded-2xl bg-dark-50 dark:bg-dark-900 border border-dark-200 dark:border-dark-800">
                 <div className="flex items-center gap-2 font-bold mb-4">
                   <IoColorPaletteOutline className="text-primary-500 w-5 h-5" />
-                  Color Palette
+                  Color Palette (Click to Filter)
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {(suggestions.colors || []).map(color => (
-                    <span key={color} className="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dark-800 border border-dark-200 dark:border-dark-700">
+                    <button 
+                      key={color} 
+                      onClick={() => toggleFilter(color)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                        activeFilter === color 
+                          ? 'bg-primary-500 text-white border-primary-500 shadow-md scale-105' 
+                          : 'bg-white dark:bg-dark-800 border-dark-200 dark:border-dark-700 hover:border-primary-400'
+                      }`}
+                    >
                       {color}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -117,13 +111,21 @@ const ResultPage = () => {
               <div className="p-6 rounded-2xl bg-dark-50 dark:bg-dark-900 border border-dark-200 dark:border-dark-800">
                 <div className="flex items-center gap-2 font-bold mb-4">
                   <IoCalendarOutline className="text-accent-500 w-5 h-5" />
-                  Best Occasions
+                  Best Occasions (Click to Filter)
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {(suggestions.occasions || []).map(occ => (
-                    <span key={occ} className="px-3 py-1 rounded-full text-xs font-semibold bg-white dark:bg-dark-800 border border-dark-200 dark:border-dark-700">
+                    <button 
+                      key={occ} 
+                      onClick={() => toggleFilter(occ)}
+                      className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                        activeFilter === occ 
+                          ? 'bg-accent-500 text-white border-accent-500 shadow-md scale-105' 
+                          : 'bg-white dark:bg-dark-800 border-dark-200 dark:border-dark-700 hover:border-accent-400'
+                      }`}
+                    >
                       {occ}
-                    </span>
+                    </button>
                   ))}
                 </div>
               </div>
@@ -133,7 +135,39 @@ const ResultPage = () => {
                   <IoPartlySunnyOutline className="text-blue-500 w-5 h-5" />
                   Ideal Seasons
                 </div>
-                <p className="text-sm font-semibold">{suggestions.season}</p>
+                <button 
+                  onClick={() => toggleFilter(suggestions.season)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                    activeFilter === suggestions.season 
+                      ? 'bg-blue-500 text-white border-blue-500 shadow-md scale-105' 
+                      : 'bg-white dark:bg-dark-800 border-dark-200 dark:border-dark-700 hover:border-blue-400'
+                  }`}
+                >
+                  {suggestions.season}
+                </button>
+              </div>
+            </div>
+
+            {/* Outfits Grid */}
+            <div className="mb-10">
+              <h3 className="font-heading font-bold text-xl mb-6">Core Clothing</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {(suggestions.outfit_details || []).map((item, idx) => (
+                  <OutfitCard key={idx} item={item} category={item.category} activeFilter={activeFilter} />
+                ))}
+              </div>
+            </div>
+
+            {/* Accessories Grid */}
+            <div className="mb-10">
+              <h3 className="font-heading font-bold text-xl mb-6">Accessories & Footwear</h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {(suggestions.accessory_details || []).map((item, idx) => (
+                  <OutfitCard key={`acc-${idx}`} item={item} category="accessory" activeFilter={activeFilter} />
+                ))}
+                {(suggestions.footwear_details || []).map((item, idx) => (
+                  <OutfitCard key={`foot-${idx}`} item={item} category="footwear" activeFilter={activeFilter} />
+                ))}
               </div>
             </div>
 

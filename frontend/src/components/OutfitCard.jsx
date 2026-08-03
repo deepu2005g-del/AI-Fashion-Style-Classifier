@@ -1,14 +1,19 @@
 import React from 'react';
 import FavoriteButton from './FavoriteButton';
-import { FiExternalLink, FiShoppingBag } from 'react-icons/fi';
+import { FiExternalLink, FiShoppingBag, FiDownload } from 'react-icons/fi';
 
-const OutfitCard = ({ item, category }) => {
+const OutfitCard = ({ item, category, activeFilter }) => {
   const itemName = item?.name || item || 'Clothing Item';
   const itemIcon = item?.icon || '👕';
   const itemCategory = item?.category || category || 'clothing';
 
-  // Function to get a realistic shopping image based on item name and category
-  const getImageUrl = (name, cat) => {
+  // Function to get a realistic shopping image based on item name, category, and active filter
+  const getImageUrl = (name, cat, filter) => {
+    if (filter) {
+      // Use AI image generation when a filter is applied to get specific colors/styles
+      return `https://image.pollinations.ai/prompt/${encodeURIComponent(filter + ' ' + name + ' fashion photography highly detailed')}?width=500&height=500&nologo=true`;
+    }
+
     const term = `${name} ${cat}`.toLowerCase();
     
     // Tops
@@ -49,7 +54,7 @@ const OutfitCard = ({ item, category }) => {
     return 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&q=80';
   };
 
-  const imageUrl = getImageUrl(itemName, itemCategory);
+  const imageUrl = getImageUrl(itemName, itemCategory, activeFilter);
 
   // Determine the platform (Flipkart or Meesho) deterministically based on item name
   const getPlatform = (name) => {
@@ -63,8 +68,9 @@ const OutfitCard = ({ item, category }) => {
   const platform = getPlatform(itemName);
   
   // Construct search URL
-  const getSearchUrl = (name, cat, platform) => {
-    const query = encodeURIComponent(`${name} ${cat}`);
+  const getSearchUrl = (name, cat, platform, filter) => {
+    const queryTerm = filter ? `${filter} ${name} ${cat}` : `${name} ${cat}`;
+    const query = encodeURIComponent(queryTerm);
     if (platform === 'Flipkart') {
       return `https://www.flipkart.com/search?q=${query}`;
     } else {
@@ -72,7 +78,7 @@ const OutfitCard = ({ item, category }) => {
     }
   };
   
-  const searchUrl = getSearchUrl(itemName, itemCategory, platform);
+  const searchUrl = getSearchUrl(itemName, itemCategory, platform, activeFilter);
 
   // Generate a realistic but stable random price for the demo (in INR for Indian stores)
   const generatePrice = (name) => {
@@ -85,6 +91,26 @@ const OutfitCard = ({ item, category }) => {
   };
   
   const price = generatePrice(itemName);
+
+  const handleDownload = async (e, url, name) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `${name.replace(/\s+/g, '_').toLowerCase()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error("Error downloading image:", error);
+      // Fallback
+      window.open(url, '_blank');
+    }
+  };
 
   return (
     <div className="glass-card-hover overflow-hidden flex flex-col group h-full bg-white dark:bg-dark-900 shadow-sm border border-dark-100 dark:border-dark-800 rounded-xl relative">
@@ -120,7 +146,7 @@ const OutfitCard = ({ item, category }) => {
         <div>
           <div className="flex justify-between items-start mb-1">
             <h4 className="font-heading font-bold text-dark-800 dark:text-dark-100 text-base leading-snug line-clamp-1 pr-2">
-              {itemName}
+              {activeFilter ? `${activeFilter} ${itemName}` : itemName}
             </h4>
             <span className="font-bold text-primary-600 dark:text-primary-400 whitespace-nowrap">
               ₹{price}
@@ -140,17 +166,16 @@ const OutfitCard = ({ item, category }) => {
             className={`flex-1 ${platform === 'Flipkart' ? 'bg-[#2874f0] hover:bg-[#1b5bd1]' : 'bg-[#f43397] hover:bg-[#d62080]'} text-white py-2.5 rounded-lg text-sm font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm active:scale-[0.98]`}
           >
             <FiShoppingBag className="w-4 h-4" />
-            <span>Shop on {platform}</span>
+            <span className="hidden sm:inline">Shop on {platform}</span>
+            <span className="sm:hidden">Shop</span>
           </a>
-          <a 
-            href={searchUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-2.5 rounded-lg border border-dark-200 dark:border-dark-700 hover:bg-dark-50 dark:hover:bg-dark-800 text-dark-600 dark:text-dark-300 transition-colors tooltip-trigger active:scale-[0.95]" 
-            title={`View on ${platform}`}
+          <button
+            onClick={(e) => handleDownload(e, imageUrl, activeFilter ? `${activeFilter} ${itemName}` : itemName)}
+            className="p-2.5 rounded-lg border border-dark-200 dark:border-dark-700 hover:bg-dark-50 dark:hover:bg-dark-800 text-dark-600 dark:text-dark-300 transition-colors tooltip-trigger active:scale-[0.95]"
+            title="Download Image"
           >
-            <FiExternalLink className="w-4 h-4" />
-          </a>
+            <FiDownload className="w-4 h-4" />
+          </button>
         </div>
       </div>
     </div>

@@ -61,18 +61,32 @@ const TrendingPage = () => {
         <div>
           <h3 className="font-heading font-bold text-2xl mb-6">Trending Colors</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {(data.colors || []).map((color, idx) => (
-              <div key={idx} className="glass-card-hover p-4 flex flex-col items-center justify-center text-center space-y-3 relative group">
-                <div 
-                  className="w-12 h-12 rounded-full shadow-inner border border-black/10 transition-transform group-hover:scale-110"
-                  style={{ backgroundColor: color.hex }}
-                ></div>
-                <div>
-                  <div className="font-bold text-sm text-dark-800 dark:text-dark-200">{color.name}</div>
-                  <div className="text-[10px] text-dark-400 uppercase tracking-wider">{color.hex}</div>
-                </div>
-              </div>
-            ))}
+            {(data.colors || []).map((color, idx) => {
+              const platform = idx % 2 === 0 ? 'Flipkart' : 'Meesho';
+              const searchUrl = platform === 'Flipkart' 
+                ? `https://www.flipkart.com/search?q=${encodeURIComponent(color.name + ' fashion')}`
+                : `https://www.meesho.com/search?q=${encodeURIComponent(color.name + ' fashion')}`;
+                
+              return (
+                <a 
+                  href={searchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={idx} 
+                  className="glass-card-hover p-4 flex flex-col items-center justify-center text-center space-y-3 relative group cursor-pointer block"
+                  title={`Shop ${color.name} Fashion`}
+                >
+                  <div 
+                    className="w-12 h-12 rounded-full shadow-inner border border-black/10 transition-transform group-hover:scale-110"
+                    style={{ backgroundColor: color.hex }}
+                  ></div>
+                  <div>
+                    <div className="font-bold text-sm text-dark-800 dark:text-dark-200 group-hover:text-primary-500 transition-colors">{color.name}</div>
+                    <div className="text-[10px] text-dark-400 uppercase tracking-wider">{color.hex}</div>
+                  </div>
+                </a>
+              );
+            })}
           </div>
         </div>
 
@@ -80,17 +94,31 @@ const TrendingPage = () => {
         <div>
           <h3 className="font-heading font-bold text-2xl mb-6">Trending Accessories</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {(data.accessories || []).map((acc, idx) => (
-              <div key={idx} className="glass-card-hover p-4 text-center group">
-                <div className="text-3xl mb-2 group-hover:scale-125 group-hover:-translate-y-1 transition-transform duration-300">
-                  {acc.icon}
-                </div>
-                <div className="font-bold text-sm">{acc.name}</div>
-                <div className="text-xs text-primary-500 dark:text-primary-400 font-semibold mt-1">
-                  Pop: {acc.popularity}%
-                </div>
-              </div>
-            ))}
+            {(data.accessories || []).map((acc, idx) => {
+              const platform = idx % 2 === 0 ? 'Meesho' : 'Flipkart';
+              const searchUrl = platform === 'Flipkart' 
+                ? `https://www.flipkart.com/search?q=${encodeURIComponent(acc.name)}`
+                : `https://www.meesho.com/search?q=${encodeURIComponent(acc.name)}`;
+
+              return (
+                <a 
+                  href={searchUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  key={idx} 
+                  className="glass-card-hover p-4 text-center group cursor-pointer block"
+                  title={`Shop ${acc.name}`}
+                >
+                  <div className="text-3xl mb-2 group-hover:scale-125 group-hover:-translate-y-1 transition-transform duration-300">
+                    {acc.icon}
+                  </div>
+                  <div className="font-bold text-sm group-hover:text-primary-500 transition-colors">{acc.name}</div>
+                  <div className="text-xs text-primary-500 dark:text-primary-400 font-semibold mt-1">
+                    Pop: {acc.popularity}%
+                  </div>
+                </a>
+              );
+            })}
           </div>
         </div>
 
