@@ -220,12 +220,16 @@ TRENDING_DATA = {
 }
 
 
-def get_outfit_suggestions(style):
+import random
+
+def get_outfit_suggestions(style, gender="Unisex", item_type="Top"):
     """
     Get complete outfit suggestions for a given fashion style.
     
     Args:
         style (str): One of 'Casual', 'Ethnic', 'Formal', 'Sports'.
+        gender (str): Men, Women, or Unisex.
+        item_type (str): Top, Bottom, Full, Footwear
         
     Returns:
         dict: Complete suggestion data including outfits, accessories,
@@ -239,16 +243,68 @@ def get_outfit_suggestions(style):
     
     data = OUTFIT_DATA[style]
     
+    # Complementary Matching Logic
+    # If user uploads a Bottom, we want to suggest Tops, Full, or Outerwear
+    # If user uploads a Top, we want to suggest Bottoms, Full, or Outerwear
+    # If user uploads Footwear, we suggest clothing
+    all_outfits = data["outfits"]
+    complementary_outfits = []
+    
+    item_type = item_type.lower()
+    for item in all_outfits:
+        # Avoid recommending the exact same category they uploaded, unless it's a full outfit
+        if item_type == "bottom" and item["category"] == "bottom":
+            continue
+        if item_type == "top" and item["category"] == "top":
+            continue
+        complementary_outfits.append(item)
+        
+    # If we filtered too aggressively (e.g., they uploaded something we don't have complements for), 
+    # fallback to all outfits
+    if len(complementary_outfits) < 2:
+        complementary_outfits = all_outfits
+
+    # Apply gender prefix to names for more accurate AI images
+    gender_prefix = ""
+    if gender.lower() == "men":
+        gender_prefix = "Men's "
+    elif gender.lower() == "women":
+        gender_prefix = "Women's "
+    
+    # Format the names in the lists
+    formatted_outfits = []
+    for item in complementary_outfits:
+        new_item = item.copy()
+        new_item["name"] = f"{gender_prefix}{item['name']}"
+        formatted_outfits.append(new_item)
+        
+    formatted_accessories = []
+    for item in data["accessories"]:
+        new_item = item.copy()
+        new_item["name"] = f"{gender_prefix}{item['name']}"
+        formatted_accessories.append(new_item)
+        
+    formatted_footwear = []
+    for item in data["footwear"]:
+        new_item = item.copy()
+        new_item["name"] = f"{gender_prefix}{item['name']}"
+        formatted_footwear.append(new_item)
+
+    # Shuffle and pick subsets so suggestions vary
+    final_outfits = random.sample(formatted_outfits, min(4, len(formatted_outfits)))
+    final_accessories = random.sample(formatted_accessories, min(3, len(formatted_accessories)))
+    final_footwear = random.sample(formatted_footwear, min(2, len(formatted_footwear)))
+    
     return {
-        "outfits": [item["name"] for item in data["outfits"]],
-        "outfit_details": data["outfits"],
-        "accessories": [item["name"] for item in data["accessories"]],
-        "accessory_details": data["accessories"],
+        "outfits": [item["name"] for item in final_outfits],
+        "outfit_details": final_outfits,
+        "accessories": [item["name"] for item in final_accessories],
+        "accessory_details": final_accessories,
         "colors": data["colors"],
         "occasions": data["occasions"],
         "season": data["season"],
-        "footwear": [item["name"] for item in data["footwear"]],
-        "footwear_details": data["footwear"],
+        "footwear": [item["name"] for item in final_footwear],
+        "footwear_details": final_footwear,
         "explanation": data["explanation"],
     }
 

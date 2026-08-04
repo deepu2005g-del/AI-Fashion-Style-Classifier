@@ -10,12 +10,12 @@ const UploadPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const handleUploadSubmit = async (imageFile) => {
+  const handleUploadSubmit = async (uploadData) => {
     setLoading(true);
     setError(null);
 
     try {
-      const result = await classifyImage(imageFile);
+      const result = await classifyImage(uploadData);
       
       // Save result item to local storage history logs
       saveHistoryItem({
@@ -23,7 +23,7 @@ const UploadPage = () => {
         prediction: result.prediction,
         confidence: result.confidence,
         reason: result.reason,
-        imageName: imageFile.name,
+        imageName: uploadData.file.name,
       });
 
       // Redirect to ResultPage with details passed via Router state

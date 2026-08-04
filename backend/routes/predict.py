@@ -89,8 +89,12 @@ def predict_style():
             # Generate explanation
             reason = get_style_explanation(predicted_style, confidence)
             
-            # Get outfit suggestions
-            suggestions = get_outfit_suggestions(predicted_style)
+            # Extract gender and item_type from form
+            gender = request.form.get('gender', 'Unisex')
+            item_type = request.form.get('item_type', 'Top')
+            
+            # Get outfit suggestions with complementary matching
+            suggestions = get_outfit_suggestions(predicted_style, gender=gender, item_type=item_type)
             
             response = {
                 "prediction": predicted_style,
