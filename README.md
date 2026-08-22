@@ -118,6 +118,30 @@ d:\AI-Fashion-Style-Classifier\
 3. **Inference**: The tensor is passed to `model.predict()`. The API returns the highest probability class along with a dictionary of all class probabilities.
 4. **Frontend Proxy**: The Vite config proxies `/api` requests to port `5000` avoiding CORS issues in development.
 
+## Deployment
+
+### Deploy Backend (Render)
+1. Add `gunicorn` to your `backend/requirements.txt` (already done).
+2. Ensure your `.keras` model file is in the repo (`.gitignore` updated to allow this).
+3. Create a **Web Service** on Render pointing to your GitHub repository.
+4. Set **Root Directory** to `backend`.
+5. Set **Build Command** to `pip install -r requirements.txt`.
+6. Set **Start Command** to `gunicorn app:create_app() --bind 0.0.0.0:$PORT`.
+7. Once deployed, note your Render URL (e.g., `https://your-backend.onrender.com`).
+
+### Deploy Frontend (Vercel)
+1. Create a new project on Vercel pointing to your GitHub repository.
+2. Set **Root Directory** to `frontend`.
+3. Add an Environment Variable: 
+   - Key: `VITE_API_URL`
+   - Value: `https://your-backend.onrender.com/api` (use your actual Render backend URL).
+4. Click Deploy.
+
+### Final Wiring
+Update `backend/app.py` CORS origins to include your newly created Vercel frontend URL, commit, and push.
+
+---
+
 ## Disclaimer
 
 This project uses an existing, pre-trained `.keras` file. There are no training scripts included. It is purely an inference and recommendation platform.

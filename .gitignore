@@ -6,5 +6,3 @@ backend/uploads/*
 node_modules/
 frontend/build/
 .env
-*.keras
-*.npz
