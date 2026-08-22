@@ -186,8 +186,12 @@ def recommend():
         # Get style recommendation
         result = recommend_style(data)
         
-        # Get outfit suggestions for the recommended style
-        suggestions = get_outfit_suggestions(result["recommended_style"])
+        # Extract gender and item_type from quiz answers for targeted recommendations
+        gender = data.get("gender", "Unisex")
+        item_type = data.get("clothing_type", "Top")
+        
+        # Get outfit suggestions for the recommended style matching target gender
+        suggestions = get_outfit_suggestions(result["recommended_style"], gender=gender, item_type=item_type)
         
         response = {
             "recommended_style": result["recommended_style"],

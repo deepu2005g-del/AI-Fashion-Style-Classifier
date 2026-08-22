@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { IoMenu, IoClose, IoShirtOutline, IoHeart, IoTrendingUp, IoPerson } from 'react-icons/io5';
+import { IoMenu, IoClose, IoShirtOutline, IoHeart, IoPerson } from 'react-icons/io5';
 import ThemeToggle from './ThemeToggle';
 
 const Navbar = () => {
@@ -12,7 +12,6 @@ const Navbar = () => {
     { to: '/', label: 'Home' },
     { to: '/upload', label: 'Analyze Style' },
     { to: '/quiz', label: 'Style Quiz' },
-    { to: '/trending', label: 'Trending', icon: <IoTrendingUp className="inline-block mr-1" /> },
     { to: '/favorites', label: 'Favorites', icon: <IoHeart className="inline-block mr-1 text-accent-400" /> },
     { to: '/profile', label: 'Profile', icon: <IoPerson className="inline-block mr-1" /> },
   ];

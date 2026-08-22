@@ -12,7 +12,6 @@ import HomePage from './pages/HomePage';
 import UploadPage from './pages/UploadPage';
 import QuizPage from './pages/QuizPage';
 import ResultPage from './pages/ResultPage';
-import TrendingPage from './pages/TrendingPage';
 import FavoritesPage from './pages/FavoritesPage';
 import ProfilePage from './pages/ProfilePage';
 
@@ -58,7 +57,6 @@ const App = () => {
                 <Route path="/upload" element={<UploadPage />} />
                 <Route path="/quiz" element={<QuizPage />} />
                 <Route path="/result" element={<ResultPage />} />
-                <Route path="/trending" element={<TrendingPage />} />
                 <Route path="/favorites" element={<FavoritesPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Routes>

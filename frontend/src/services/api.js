@@ -29,11 +29,6 @@ export const getRecommendation = async (quizAnswers) => {
   return response.data;
 };
 
-export const fetchTrendingData = async () => {
-  const response = await api.get('/trending');
-  return response.data;
-};
-
 export const checkApiHealth = async () => {
   const response = await api.get('/health');
   return response.data;

@@ -264,11 +264,28 @@ def get_outfit_suggestions(style, gender="Unisex", item_type="Top"):
     if len(complementary_outfits) < 2:
         complementary_outfits = all_outfits
 
+    gender_str = str(gender).lower().strip()
+    is_female = gender_str in ["women", "female"]
+    is_male = gender_str in ["men", "male"]
+
+    # Filter gender-exclusive items
+    gender_filtered = []
+    for item in complementary_outfits:
+        name_lower = item["name"].lower()
+        if is_female and any(ex in name_lower for ex in ["sherwani", "nehru"]):
+            continue
+        if is_male and any(ex in name_lower for ex in ["saree", "lehenga", "salwar", "pencil skirt", "sports bra"]):
+            continue
+        gender_filtered.append(item)
+
+    if len(gender_filtered) >= 2:
+        complementary_outfits = gender_filtered
+
     # Apply gender prefix to names for more accurate AI images
     gender_prefix = ""
-    if gender.lower() == "men":
+    if is_male:
         gender_prefix = "Men's "
-    elif gender.lower() == "women":
+    elif is_female:
         gender_prefix = "Women's "
     
     # Format the names in the lists
@@ -281,6 +298,10 @@ def get_outfit_suggestions(style, gender="Unisex", item_type="Top"):
     formatted_accessories = []
     for item in data["accessories"]:
         new_item = item.copy()
+        # Filter female accessories for men (e.g. Jhumka, Bangles, Maang Tikka, Potli)
+        name_lower = item["name"].lower()
+        if is_male and any(ex in name_lower for ex in ["jhumka", "bangles", "tikka", "potli"]):
+            continue
         new_item["name"] = f"{gender_prefix}{item['name']}"
         formatted_accessories.append(new_item)
         

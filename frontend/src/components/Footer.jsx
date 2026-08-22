@@ -25,16 +25,12 @@ const Footer = () => {
             <ul className="space-y-2 text-sm">
               <li><Link to="/upload" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">Analyze Style</Link></li>
               <li><Link to="/quiz" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">Find My Style</Link></li>
-              <li><Link to="/trending" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">Trending Now</Link></li>
               <li><Link to="/favorites" className="hover:text-primary-500 dark:hover:text-primary-400 transition-colors">Saved Outfits</Link></li>
             </ul>
           </div>
         </div>
-        <div className="border-t border-dark-200 dark:border-dark-800/40 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs">
+        <div className="border-t border-dark-200 dark:border-dark-800/40 pt-8 text-center text-xs">
           <p>© {new Date().getFullYear()} FashionAI Assistant. Built with Tensorflow & Pythons Flask.</p>
-          <p className="flex items-center mt-4 sm:mt-0">
-            Made with <IoHeart className="mx-1 text-accent-500 animate-pulse" /> for academic showcase
-          </p>
         </div>
       </div>
     </footer>

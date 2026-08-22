@@ -55,12 +55,12 @@ const ImageUploader = ({ onUpload, error }) => {
     reader.readAsDataURL(file);
   };
 
-  const [gender, setGender] = useState('Unisex');
-  const [itemType, setItemType] = useState('Top');
+  const [gender, setGender] = useState('');
+  const [itemType, setItemType] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (selectedFile) {
+    if (selectedFile && gender && itemType) {
       onUpload({ file: selectedFile, gender, itemType });
     }
   };
@@ -68,6 +68,8 @@ const ImageUploader = ({ onUpload, error }) => {
   const handleClear = () => {
     setPreview(null);
     setSelectedFile(null);
+    setGender('');
+    setItemType('');
   };
 
   return (
@@ -133,24 +135,32 @@ const ImageUploader = ({ onUpload, error }) => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-dark-50 dark:bg-dark-900 p-4 rounded-xl border border-dark-200 dark:border-dark-800">
               <div>
-                <label className="block text-sm font-semibold mb-2">Who is this for?</label>
+                <label className="block text-sm font-semibold mb-2">
+                  1. Who is this for? <span className="text-accent-500">*</span>
+                </label>
                 <select 
                   value={gender} 
                   onChange={(e) => setGender(e.target.value)}
                   className="w-full bg-white dark:bg-dark-950 border border-dark-200 dark:border-dark-700 rounded-lg p-2.5 text-sm outline-none focus:border-primary-500"
+                  required
                 >
+                  <option value="">-- Select Target Gender --</option>
                   <option value="Men">Men</option>
                   <option value="Women">Women</option>
                   <option value="Unisex">Unisex</option>
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-semibold mb-2">What did you upload?</label>
+                <label className="block text-sm font-semibold mb-2">
+                  2. What did you upload? <span className="text-accent-500">*</span>
+                </label>
                 <select 
                   value={itemType} 
                   onChange={(e) => setItemType(e.target.value)}
                   className="w-full bg-white dark:bg-dark-950 border border-dark-200 dark:border-dark-700 rounded-lg p-2.5 text-sm outline-none focus:border-primary-500"
+                  required
                 >
+                  <option value="">-- Select Item Type --</option>
                   <option value="Top">Top (Shirt, T-Shirt, Jacket)</option>
                   <option value="Bottom">Bottom (Pants, Jeans, Skirt)</option>
                   <option value="Full">Full Outfit (Dress, Suit)</option>
@@ -159,14 +169,20 @@ const ImageUploader = ({ onUpload, error }) => {
               </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center">
               <button
                 type="submit"
-                className="btn-primary w-full sm:w-auto px-10 py-3.5 flex items-center justify-center gap-2"
+                disabled={!gender || !itemType}
+                className="btn-primary w-full sm:w-auto px-10 py-3.5 flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:transform-none"
               >
                 <IoImageOutline className="w-5 h-5" />
                 Analyze Clothes Style
               </button>
+              {(!gender || !itemType) && (
+                <p className="text-xs text-accent-500 font-medium mt-2">
+                  Please answer both questions above to enable outfit analysis.
+                </p>
+              )}
             </div>
           </div>
         )}

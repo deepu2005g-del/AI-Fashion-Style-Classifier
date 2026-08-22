@@ -17,7 +17,6 @@ const FavoritesPage = () => {
 
   const outfits = favorites.filter(f => f.type === 'outfit');
   const recommendations = favorites.filter(f => f.type === 'recommendation');
-  const trending = favorites.filter(f => f.type === 'trending');
 
   return (
     <div className="section-container min-h-[60vh]">
@@ -33,7 +32,7 @@ const FavoritesPage = () => {
           <p className="text-dark-500 mb-6">Start exploring styles and save your favorite outfits here.</p>
           <div className="flex justify-center gap-4">
             <Link to="/upload" className="btn-primary text-sm px-4 py-2">Upload Image</Link>
-            <Link to="/trending" className="btn-secondary text-sm px-4 py-2">Explore Trending</Link>
+            <Link to="/quiz" className="btn-secondary text-sm px-4 py-2">Take Style Quiz</Link>
           </div>
         </div>
       ) : (
@@ -85,30 +84,6 @@ const FavoritesPage = () => {
                       <h4 className="font-heading font-bold text-2xl mb-2">{fav.details.recommended_style}</h4>
                       <p className="text-sm text-dark-600 dark:text-dark-300 line-clamp-2">{fav.details.reason}</p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Trending Section */}
-          {trending.length > 0 && (
-            <section>
-              <h3 className="font-heading font-bold text-xl mb-6 flex items-center gap-2">
-                <span className="text-orange-500">🔥</span> Saved Trends
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {trending.map(fav => (
-                  <div key={fav.id} className="glass-card-hover p-4 relative group text-center">
-                    <button 
-                      onClick={() => handleRemove(fav.id)}
-                      className="absolute top-2 right-2 p-1.5 rounded-full bg-accent-100 text-accent-600 opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-accent-500 hover:text-white"
-                    >
-                      <IoTrashOutline className="w-4 h-4" />
-                    </button>
-                    <div className="text-3xl mb-2">{fav.details.icon}</div>
-                    <div className="font-bold text-sm">{fav.details.name}</div>
-                    <div className="text-xs text-dark-500 mt-1">{fav.details.category}</div>
                   </div>
                 ))}
               </div>
