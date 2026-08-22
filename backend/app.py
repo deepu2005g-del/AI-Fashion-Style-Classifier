@@ -49,6 +49,7 @@ def create_app():
                 "http://localhost:5173",
                 "http://127.0.0.1:3000",
                 "http://127.0.0.1:5173",
+                "https://ai-fashion-style-classifier.vercel.app/"
             ],
             "methods": ["GET", "POST", "OPTIONS"],
             "allow_headers": ["Content-Type", "Authorization"],
