@@ -3,7 +3,7 @@ import axios from 'axios';
 // Create custom Axios instance with base URL and timeout configurations.
 // Uses proxy configured in vite.config.js for development, falls back to port 5000 directly.
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://ai-fashion-style-classifier.onrender.com/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
